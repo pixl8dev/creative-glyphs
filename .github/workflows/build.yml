@@ -1,15 +1,20 @@
 name: 'build'
 on: [ 'pull_request', 'push' ]
 jobs:
-    build:
-        if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
-        runs-on: 'ubuntu-latest'
-        steps:
-            -   name: 'checkout repo'
-                uses: 'actions/checkout@v2'
-            -   name: 'setup JDK'
-                uses: 'actions/setup-java@v1'
-                with:
-                    java-version: 17
-            -   name: 'build'
-                run: './gradlew shadowJar'
+  build:
+    if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'checkout repo'
+        uses: 'actions/checkout@v2'
+      - name: 'setup JDK'
+        uses: 'actions/setup-java@v1'
+        with:
+          java-version: 17
+      - name: 'build'
+        run: './gradlew shadowJar'
+      - name: 'upload artifact'
+        uses: 'actions/upload-artifact@v2'
+        with:
+          name: jar # You can change this name!
+          path: build/libs/*.jar # This is where your built .jar file is likely located
