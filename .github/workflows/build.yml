@@ -4,6 +4,9 @@ jobs:
   build:
     if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
     runs-on: 'ubuntu-latest'
+    permissions: # Add this section!
+      contents: read # Allow reading the repository
+      actions: write # Allow downloading actions
     steps:
       - name: 'checkout repo'
         uses: 'actions/checkout@v2'
@@ -16,5 +19,5 @@ jobs:
       - name: 'upload artifact'
         uses: 'actions/upload-artifact@v2'
         with:
-          name: jar # You can change this name!
-          path: build/libs/*.jar # This is where your built .jar file is likely located
+          name: my-built-jar
+          path: build/libs/*.jar
