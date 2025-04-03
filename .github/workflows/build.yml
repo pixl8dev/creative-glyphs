@@ -4,9 +4,10 @@ jobs:
   build:
     if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
     runs-on: 'ubuntu-latest'
-    permissions: # Add this section!
-      contents: read # Allow reading the repository
-      actions: write # Allow downloading actions
+    permissions:
+      actions: write
+      contents: read
+      packages: read
     steps:
       - name: 'checkout repo'
         uses: 'actions/checkout@v2'
@@ -16,8 +17,13 @@ jobs:
           java-version: 17
       - name: 'build'
         run: './gradlew shadowJar'
-      - name: 'upload artifact'
-        uses: 'actions/upload-artifact@v2'
+      - name: 'Upload a Build Artifact' # Name of the step
+        uses: 'actions/upload-artifact@v4.6.2' # Use the version you provided
         with:
-          name: my-built-jar
-          path: build/libs/*.jar
+          name: my-built-jar # Name of the artifact
+          path: build/libs/*.jar # Path to the .jar file
+          if-no-files-found: error # Make the action fail if no .jar is found
+          retention-days: 7 # Keep the artifact for 7 days
+          compression-level: 6 # Standard compression
+          overwrite: true # Overwrite if an artifact with the same name exists
+          include-hidden-files: false # Do not include hidden files.
